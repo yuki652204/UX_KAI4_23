@@ -1,115 +1,100 @@
-# csv-batch
+# UX_KAI — フォームUXスコア診断ツール
 
-CSVファイルを読み込んでDBに保存するSpring Bootバッチアプリケーションです。
-管理画面からボタン一つでバッチを起動できます。
+> "入力エラー"は、説明になっていない。
 
-## 概要
+高齢者・ITリテラシーが低いユーザーでも「なぜエラーになったか」が一目でわかる、フォームUX自動診断ツールです。
 
-`input.csv` を読み込み、バリデーションを行った上でH2データベースに保存します。
-処理結果を `output.csv` に書き出し、管理画面でDB登録済みユーザーを確認できます。
+---
 
-## 使用技術
+## できること
 
-| 技術 | バージョン | 用途 |
-|------|-----------|------|
-| Java | 17 | 開発言語 |
-| Spring Boot | 3.3.5 | アプリケーションフレームワーク |
-| Spring Batch | - | バッチ処理（Job/Step/Reader/Processor/Writer） |
-| Spring MVC | - | 管理画面のコントローラー |
-| Thymeleaf | - | 管理画面のテンプレートエンジン |
-| Spring Data JPA | - | DB操作 |
-| H2 Database | - | 組み込みDB（開発・テスト用） |
-| OpenCSV | 5.9 | CSV読み書き |
-| JUnit5 | - | テスト |
+- **URLまたはHTMLを貼り付けるだけ**でフォームのUXを自動診断
+- **100点満点のスコア + グレード（A〜D）**で客観的に評価
+- **ビフォーアフター表示**で改善前・改善後のメッセージを比較
+- **PDFレポート自動生成**で納品資料・提案書にそのまま使える
+- **Claude API連携**で自然な日本語の改善提案文を自動生成
 
-## 機能
+---
 
-- CSVファイルの読み込み
-- バリデーションチェック（name・email・age）
-- H2データベースへの保存
-- 処理結果をoutput.csvに書き出し
-- 管理画面からバッチを手動起動
-- 管理画面でDB登録済みユーザーを一覧表示
+## 診断項目（6項目・100点満点）
 
-## バリデーションルール
+| # | 項目 | 満点 |
+|---|------|------|
+| ① | バリデーションエラー文の具体性 | 25点 |
+| ② | 高齢者・初心者が理解できる平易な日本語 | 20点 |
+| ③ | エラーの表示タイミング | 15点 |
+| ④ | 複数エラーの同時表示 | 15点 |
+| ⑤ | パスワード要件の事前明示 | 15点 |
+| ⑥ | エラー箇所へのフォーカス自動移動 | 10点 |
 
-| 項目 | ルール |
-|------|--------|
-| name | 空欄NG |
-| email | 空欄NG・@を含む |
-| age | 空欄NG・数字のみ |
+---
 
-## プロジェクト構成
+## 技術スタック
 
-```
-src/
-├── main/
-│   ├── java/com/example/demo/
-│   │   ├── batch/
-│   │   │   ├── AdminController.java      # 管理画面・バッチ起動API
-│   │   │   ├── BatchConfig.java          # Spring Batch設定（Job/Step）
-│   │   │   └── CsvImportBatch.java       # シンプル版バッチ（無効化済み）
-│   │   ├── model/
-│   │   │   ├── UserRecord.java           # エンティティ
-│   │   │   ├── UserRecordRepository.java # DBアクセス
-│   │   │   └── UserRecordValidator.java  # バリデーション
-│   │   └── DemoApplication.java
-│   └── resources/
-│       ├── templates/
-│       │   └── admin.html                # 管理画面（Thymeleaf）
-│       ├── application.properties
-│       ├── input.csv                     # 入力ファイル
-│       └── output.csv                    # 出力ファイル（自動生成）
-└── test/
-    └── java/com/example/demo/model/
-        └── UserRecordValidatorTest.java  # テスト（5件）
+| 層 | 技術 |
+|---|---|
+| バックエンド | Java 21 / Spring Boot 3.2 |
+| HTML解析 | Jsoup |
+| PDF生成 | Apache PDFBox 3.0 + IPAexゴシック |
+| AI改善提案 | Anthropic Claude API |
+| フロントエンド | HTML / CSS / Vanilla JS |
+
+---
+
+## セットアップ
+
+### 必要環境
+
+- Java 21
+- Maven 3.8以上
+- （オプション）Anthropic APIキー
+
+### 起動方法
+
+```bash
+# バックエンド起動
+cd backend
+mvn spring-boot:run
+
+# フロントエンドを開く
+open ../frontend/index.html
 ```
 
-## Spring Batchの構成
+### Claude API連携（オプション）
 
-```
-Job（csvImportJob）
-　└── Step（csvImportStep）
-　　　├── Reader　　：input.csvを1行ずつ読み込む（FlatFileItemReader）
-　　　├── Processor：バリデーション → UserRecordに変換（ItemProcessor）
-　　　└── Writer　　：DBに保存（JpaItemWriter）
+```bash
+export ANTHROPIC_API_KEY=sk-ant-xxxxxxxx
+mvn spring-boot:run
 ```
 
-## 入力ファイル形式（input.csv）
+APIキーなしでも動作します（改善提案はルールベースで生成）。
 
-```csv
-name,email,age
-山田太郎,taro@example.com,28
-鈴木花子,hanako@example.com,34
-```
+---
 
-## 出力ファイル形式（output.csv）
+## 使い方
 
-```csv
-"name","email","age","status"
-"山田太郎","taro@example.com","28","SUCCESS"
-"佐藤次郎","notanemail","25","ERROR"
-```
+1. ブラウザで `frontend/index.html` を開く
+2. 「HTMLで診断」タブにフォームのHTMLを貼り付ける
+3. 「診断開始」をクリック
+4. スコア・ビフォーアフター・改善提案を確認
+5. 「PDFレポートをダウンロード」で報告書を取得
 
-## 実行方法
+---
 
-Spring Tools for Eclipse でプロジェクトを右クリック → `Run As` → `Spring Boot App`
+## スクリーンショット
 
-起動後、ブラウザで管理画面にアクセス：
+> 診断結果画面（ビフォーアフター比較）
 
-```
-http://localhost:8080/admin
-```
+---
 
-管理画面から「▶ CSVインポートバッチを起動」ボタンを押すとバッチが実行されます。
+## 対象ユーザー
 
-## テスト実行
+- Web制作会社・受託開発（納品前品質チェック）
+- 事業会社のWebチーム（EC・金融・医療・行政）
+- フリーランスエンジニア（提案資料の差別化）
 
-`UserRecordValidatorTest.java` を右クリック → `Run As` → `JUnit Test`
+---
 
-テスト項目：
-- 正常データは `true` を返す
-- nameが空の場合は `false` を返す
-- emailにアットマークがない場合は `false` を返す
-- ageが数字でない場合は `false` を返す
-- 配列が短い場合は `false` を返す
+## ライセンス
+
+MIT
