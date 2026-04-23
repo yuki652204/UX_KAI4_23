@@ -1,0 +1,4 @@
+backend/target/
+*.pdf
+*.bak
+.DS_Store
