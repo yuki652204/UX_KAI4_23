@@ -1,0 +1,5 @@
+name = "form-ux-frontend"
+pages_build_output_dir = "dist"
+
+[build]
+command = "bash build.sh"

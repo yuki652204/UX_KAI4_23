@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: form-ux-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    healthCheckPath: /api/health
+    envVars:
+      - key: CLAUDE_API_KEY
+        sync: false
