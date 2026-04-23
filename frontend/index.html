@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フォームUXスコア診断ツール</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <h1>フォームUXスコア診断ツール</h1>
+  <p class="subtitle">高齢者・初心者にも使いやすいフォームかを自動診断します</p>
+</header>
+
+<main>
+
+  <!-- 入力エリア -->
+  <section class="input-section">
+    <div class="tab-group">
+      <button class="tab active" data-target="tab-url">URLで診断</button>
+      <button class="tab" data-target="tab-html">HTMLで診断</button>
+    </div>
+
+    <div id="tab-url" class="tab-content active">
+      <label for="url-input">診断したいフォームのURLを入力してください</label>
+      <input type="url" id="url-input" placeholder="https://example.com/contact"
+             autocomplete="off">
+    </div>
+
+    <div id="tab-html" class="tab-content">
+      <label for="html-input">フォームのHTMLを貼り付けてください</label>
+      <textarea id="html-input" rows="8"
+                placeholder="<form>&#10;  <input type=&quot;email&quot; required>&#10;  ...&#10;</form>"></textarea>
+    </div>
+
+    <button id="diagnose-btn" class="btn-primary">診断開始</button>
+  </section>
+
+  <!-- ローディング -->
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <p>診断中です。しばらくお待ちください...</p>
+  </div>
+
+  <!-- エラー表示 -->
+  <div id="error-message" class="error-banner hidden"></div>
+
+  <!-- 結果エリア -->
+  <section id="result-section" class="hidden">
+
+    <!-- 総合スコア -->
+    <div class="overall-score-card">
+      <div class="score-gauge-wrapper">
+        <svg class="score-gauge" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle id="gauge-fill" class="gauge-fill" cx="60" cy="60" r="50"
+                  stroke-dasharray="0 314"/>
+          <text id="gauge-score" class="gauge-score" x="60" y="65">0</text>
+        </svg>
+        <div id="grade-badge" class="grade-badge">-</div>
+      </div>
+      <div class="overall-text">
+        <h2>総合スコア</h2>
+        <p id="overall-comment" class="overall-comment"></p>
+      </div>
+    </div>
+
+    <!-- 項目別スコア -->
+    <h2 class="section-title">項目別スコア</h2>
+    <div id="criteria-list" class="criteria-list"></div>
+
+    <!-- 優先改善事項 -->
+    <h2 class="section-title">優先改善事項 TOP 3</h2>
+    <ol id="suggestions-list" class="suggestions-list"></ol>
+
+    <!-- PDFダウンロード -->
+    <div class="pdf-section">
+      <button id="pdf-btn" class="btn-pdf">
+        📄 PDFレポートをダウンロード
+      </button>
+    </div>
+
+  </section>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>

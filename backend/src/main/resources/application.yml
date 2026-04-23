@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: form-ux-diagnosis
+
+server:
+  port: 8081
+
+formux:
+  claude:
+    api-key: ${CLAUDE_API_KEY:}
+    model: claude-opus-4-6
+
+logging:
+  level:
+    com.formux: DEBUG
+  file:
+    name: /tmp/formux-app.log
