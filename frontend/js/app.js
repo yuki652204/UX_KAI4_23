@@ -2,7 +2,7 @@
    フォームUXスコア診断ツール - フロントエンドスクリプト
 ========================================================== */
 
-const API_BASE = 'http://localhost:8081/api';
+const API_BASE = 'https://ux-kai4-23.onrender.com/api';
 
 // ---- DOM参照 ----
 const tabs        = document.querySelectorAll('.tab');
